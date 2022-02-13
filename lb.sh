@@ -3,9 +3,14 @@
 yum update -y
 yum -y install yum-utils
 
-touch /etc/yum.repos.d/nginx.repo
+basearch=$(rpm -q --qf "%{arch}" -f /etc/$distro)
 
+#Apps IPs
+server1=10.0.0.0
+server2=10.0.0.0
+server3=10.0.0.0
 
+cat <<EOF | tee /etc/yum.repos.d/nginx.repo
 [nginx-stable]
 name=nginx stable repo
 baseurl=http://nginx.org/packages/centos/7/$basearch/
@@ -20,6 +25,7 @@ gpgcheck=1
 enabled=0
 gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true
+EOF
 
 yum -y install nginx
 
@@ -34,9 +40,9 @@ touch /etc/nginx/conf.d/default.conf
 
 
 upstream adel {
-    server 10.210.102.143:9000;
-    server 10.210.102.84:9000;
-    server 10.210.102.89:9000;  
+    server $server1:9000;
+    server $server2:9000;
+    server $server3:9000;  
 }
 server {
     listen       80;
