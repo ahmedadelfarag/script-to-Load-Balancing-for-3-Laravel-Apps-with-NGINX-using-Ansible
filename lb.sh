@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #Apps IPs
+
 server1=10.91.141.29
 server2=10.91.141.26
 server3=10.91.141.70
@@ -64,7 +65,7 @@ server {
         fastcgi_split_path_info ^(.+\.php)(.*)$;
         fastcgi_pass   $appname;
         fastcgi_index  index.php;
-        fastcgi_param SCRIPT_FILENAME "$realpath_root$fastcgi_script_name";
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include        fastcgi_params;
     }
     
@@ -81,5 +82,5 @@ sed -i "s/\$server3/$server3/g" /etc/nginx/conf.d/default.conf
 sed -i "s/\$appname/$appname/g" /etc/nginx/conf.d/default.conf
 
 mkdir -p /var/www/$appname
-chown -R nginx:nginx /var/www/$appname
+chown -R nginx:nginx /var/www/
 systemctl reload nginx
