@@ -38,7 +38,7 @@ systemctl enable nginx
 rm /etc/nginx/conf.d/default.conf
 
 cat <<'EOF' | tee /etc/nginx/conf.d/default.conf
-upstream adel {
+upstream $appname {
     server $server1:9000;
     server $server2:9000;
     server $server3:9000;  
