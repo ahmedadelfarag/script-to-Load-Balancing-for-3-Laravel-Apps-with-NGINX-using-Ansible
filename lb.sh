@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#variables
+
 #Apps IPs
 
 server1=10.91.141.29
@@ -9,6 +11,8 @@ server3=10.91.141.70
 #app name
 
 appname=adel
+
+#installing NGINX
 
 yum update -y
 yum -y install yum-utils
@@ -35,6 +39,11 @@ yum -y install nginx
 systemctl start nginx
 
 systemctl enable nginx
+
+
+#configure NGINX
+
+cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
 
 rm /etc/nginx/conf.d/default.conf
 
@@ -82,5 +91,7 @@ sed -i "s/\$server3/$server3/g" /etc/nginx/conf.d/default.conf
 sed -i "s/\$appname/$appname/g" /etc/nginx/conf.d/default.conf
 
 mkdir -p /var/www/$appname
+
 chown -R nginx:nginx /var/www/
+
 systemctl reload nginx
