@@ -4,11 +4,11 @@
 
 #variables
 
-#appname
-appname=adel
-
 #LB IP
-lbip=10.91.141.67
+lbip=$lbaddr
+
+#appname
+appname=$nameapp
 
 #installations
 

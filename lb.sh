@@ -4,13 +4,13 @@
 
 #Apps IPs
 
-server1=10.91.141.29
-server2=10.91.141.26
-server3=10.91.141.70
+server1=$server1addr
+server2=$server2addr
+server3=$server3addr
 
 #app name
 
-appname=adel
+appname=$nameapp
 
 #installing NGINX
 

@@ -1,0 +1,17 @@
+#lbfor3aps.yml
+---
+  - name: copy script from control server to lb server
+    hosts: loadbalancer
+    tasks:
+      - name: Copy script to loadbalancer server
+        template: src=lbdeploy.sh dest=/home/lbdeploy.sh mode=0777
+      - name: Execute script on lb
+        script: /home/lbdeploy.sh
+
+  - name: copy script from control server to Webservers server
+    hosts: webservers
+    tasks:
+      - name: Copy script to lwebservers server
+        template: src=laravelappdeploy.sh dest=/home/laravelappdeploy.sh mode=0777
+      - name: Execute script on lb
+        script: /home/laravelappdeploy.sh
