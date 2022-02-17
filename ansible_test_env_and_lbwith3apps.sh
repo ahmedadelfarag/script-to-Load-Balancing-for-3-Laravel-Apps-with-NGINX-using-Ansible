@@ -84,7 +84,7 @@ echo "+++ Test Ansible using Ping +++"
 lxc exec control-server -- ansible loadbalancer -m ping
 lxc exec control-server -- ansible webservers -m ping
 
-e
+
 echo "+++ store loadbalncer ip and webservers ip in copy of scripts"
 
 appn=adel
