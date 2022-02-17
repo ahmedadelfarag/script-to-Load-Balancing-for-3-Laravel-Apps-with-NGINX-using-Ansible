@@ -84,33 +84,30 @@ echo "+++ Test Ansible using Ping +++"
 lxc exec control-server -- ansible loadbalancer -m ping
 lxc exec control-server -- ansible webservers -m ping
 
-echo "+++ store loadbalncer ip and webservers ip in document"
-
-lxc exec control-server -- ssh lb -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1 >> /home/servers
-lxc exec control-server -- ssh server1 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1 >> /home/servers
-lxc exec control-server -- ssh server2 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1 >> /home/servers
-lxc exec control-server -- ssh server3 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1 >> /home/servers
-
-
+e
 echo "+++ store loadbalncer ip and webservers ip in copy of scripts"
 
-appname=adel
+appn=adel
 
 cp lb.sh /home/lbdeploy.sh
 cp laravelapp.sh /home/laravelappdeploy.sh
 
-sed -i "s/\$nameapp/$appname/g" /home/laravelappdeploy.sh
-sed -i "s/\$lbaddr/$(awk '{print $1}' /home/servers)/g" /home/laravelappdeploy.sh
+sed -i "s@\$nameapp@$appn@g" /home/laravelappdeploy.sh
 
-sed -i "s/\$nameapp/$appname/g" /home/lbdeploy.sh
+lbaddress=$(lxc exec control-server -- ssh lb -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
 
-servername1=$(awk '{print $2}' /home/servers)
-servername2=$(awk '{print $3}' /home/servers)
-servername3=$(awk '{print $2}' /home/servers)
 
-sed -i "s/\$server1addr/$servername1/g" /home/lbdeploy.sh
-sed -i "s/\$server2addr/$servername2/g" /home/lbdeploy.sh
-sed -i "s/\$server3addr/$servername3/g" /home/lbdeploy.sh
+sed -i "s@\$lbaddr@$lbaddress@g" /home/laravelappdeploy.sh
+
+sed -i "s@\$nameapp@$appn@g" /home/lbdeploy.sh
+
+servername1=$(lxc exec control-server -- ssh server1 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+servername2=$(lxc exec control-server -- ssh server2 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+servername3=$(lxc exec control-server -- ssh server3 -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+
+sed -i "s@\$server1addr@$servername1@g" /home/lbdeploy.sh
+sed -i "s@\$server2addr@$servername2@g" /home/lbdeploy.sh
+sed -i "s@\$server3addr@$servername3@g" /home/lbdeploy.sh
 
 echo "+++ Transfer needed scripts and needed playbooks for ansible +++"
 
@@ -120,7 +117,6 @@ lxc file push playbooks/lbfor3apps.yml control-server/home/
 
 echo "+++ Clean Up Files +++"
 
-rm /home/servers
 rm /home/lbdeploy.sh
 rm /home/laravelappdeploy.sh
 
