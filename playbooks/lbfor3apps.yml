@@ -1,4 +1,4 @@
-#lbfor3aps.yml
+#lbfor3aps.yml 
 ---
   - name: copy script from control server to lb server
     hosts: loadbalancer

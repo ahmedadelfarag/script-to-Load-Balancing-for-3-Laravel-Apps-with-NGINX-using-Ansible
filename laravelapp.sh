@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#laravel app
+#laravel app script with LB
 
 #variables
 

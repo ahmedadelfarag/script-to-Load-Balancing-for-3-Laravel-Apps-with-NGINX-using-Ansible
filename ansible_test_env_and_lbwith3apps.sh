@@ -1,8 +1,12 @@
 #!/bin/bash
+
+#This the main script and first to run check that you are in same location as the script
+
 echo "+++ Launch first container +++"
 lxc launch images:centos/7 control-server
 
 echo "+++ Creating script to configure SSH +++"
+
 cat >> sshsetup.sh << EOF
 #!/bin/bash
 yum -y update
@@ -13,6 +17,7 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 EOF
 
 echo "+++ Creating script to install ansible +++"
+
 cat >> ansibleinstall.sh << EOF
 #!/bin/bash
 yum -y update
@@ -61,10 +66,6 @@ echo "+++ Clean Up Files +++"
 rm ansibleinstall.sh
 rm sshsetup.sh
 
-echo "+++ Install Finished! +++"
-
-lxc list
-
 lxc exec control-server -- systemctl start sshd
 
 lxc exec lb -- yum install openssh-server -y
@@ -79,14 +80,19 @@ lxc exec server2 -- systemctl start sshd
 lxc exec server3 -- yum install openssh-server -y
 lxc exec server3 -- systemctl start sshd
 
+echo "+++ Install Finished! +++"
+
+lxc list
+
 echo "+++ Test Ansible using Ping +++"
 
 lxc exec control-server -- ansible loadbalancer -m ping
 lxc exec control-server -- ansible webservers -m ping
 
 
-echo "+++ store loadbalncer ip and webservers ip in copy of scripts"
+echo "+++ store loadbalncer ip and webservers ip in variables of new copy of the scripts"
 
+# Application optional name
 appn=adel
 
 cp lb.sh /home/lbdeploy.sh
@@ -95,7 +101,6 @@ cp laravelapp.sh /home/laravelappdeploy.sh
 sed -i "s@\$nameapp@$appn@g" /home/laravelappdeploy.sh
 
 lbaddress=$(lxc exec control-server -- ssh lb -- ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
-
 
 sed -i "s@\$lbaddr@$lbaddress@g" /home/laravelappdeploy.sh
 
@@ -119,6 +124,8 @@ echo "+++ Clean Up Files +++"
 
 rm /home/lbdeploy.sh
 rm /home/laravelappdeploy.sh
+
+echo "+++ Run Ansible Playbook +++"
 
 lxc exec control-server -- ansible-playbook /home/lbfor3apps.yml
 

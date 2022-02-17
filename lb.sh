@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#LoadBalancer with NGINX for 3 Laravel Apps
+
 #variables
 
 #Apps IPs
